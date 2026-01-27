@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bawang Goreng Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #4a5568;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Layout Container */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar.hidden {
+            margin-left: -250px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            color: #718096;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 0 20px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #a0aec0;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #374151;
+            color: white;
+            border-left: 4px solid #e65100;
+        }
+
+        .sidebar-menu a::before {
+            content: '📦';
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar-menu a:nth-child(2)::before {
+            content: '📥';
+        }
+
+        .sidebar-menu a:nth-child(3)::before {
+            content: '📤';
+        }
+
+        .logout-btn {
+            display: block;
+            padding: 12px 20px;
+            color: #a0aec0;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #374151;
+            color: #fc8181;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 32px;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .btn-add {
+            background: #0066ff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background: #0052cc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0066ff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save, .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #38a169;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #38a169;
+        }
+
+        .btn-delete {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #e53e3e;
+        }
+
+        /* Notification Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 60px;
+                bottom: 0;
+                z-index: 1000;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .main-content {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .table-container {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🧅 Bawang Goreng Store</h1>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">CORE</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showPage('stok')" id="menuStok" class="active">Stok Barang</a></li>
+                    <li><a href="#" onclick="showPage('scanner')" id="menuScanner">Scan Barcode</a></li>
+                    <li><a href="#" onclick="showPage('generator')" id="menuGenerator">Generator Barcode</a></li>
+                    <li><a href="#" onclick="showPage('laporan')" id="menuLaporan">Laporan Penjualan</a></li>
+                </ul>
+            </div>
+            <div class="logout-btn" onclick="logout()">🚪 Logout</div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Stok Barang -->
+            <div id="pageStok" class="page-content">
+                <h1 class="page-title">Stok Barang</h1>
+            
+            <button class="btn-add" onclick="openModal()">Tambah Barang</button>
+
+            <div class="table-container">
+                <table id="stockTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Barcode</th>
+                            <th>Deskripsi</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data akan diisi dari data.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Page Scanner Barcode (Hidden by default) -->
+        <div id="pageScanner" class="page-content" style="display: none;">
+            <h1 class="page-title">📷 Scan Barcode - Barang Keluar</h1>
+            
+            <!-- Statistics -->
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 14px; opacity: 0.9;">Total Scan Hari Ini</div>
+                    <div style="font-size: 32px; font-weight: bold; margin: 10px 0;" id="statTotalScan">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 14px; opacity: 0.9;">Barang Keluar</div>
+                    <div style="font-size: 32px; font-weight: bold; margin: 10px 0;" id="statBarangKeluar">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 14px; opacity: 0.9;">Terakhir Scan</div>
+                    <div style="font-size: 32px; font-weight: bold; margin: 10px 0;" id="statLastTime">--:--</div>
+                </div>
+            </div>
+
+            <!-- Alert -->
+            <div id="alertBox" style="padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;"></div>
+
+            <!-- Camera Section -->
+            <div style="background: white; border-radius: 15px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px;">📷 Kamera Scanner</h2>
+                
+                <div id="scanner-container" style="position: relative; width: 100%; max-width: 640px; margin: 0 auto 20px; background: #000; border-radius: 10px; overflow: hidden;">
+                    <div id="interactive" style="width: 100%; height: 480px;"></div>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 200px; border: 3px solid #48bb78; border-radius: 10px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); pointer-events: none;">
+                        <div style="position: absolute; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #48bb78, transparent); animation: scan 2s linear infinite;"></div>
+                    </div>
+                    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.7); color: white; padding: 10px 20px; border-radius: 20px; font-size: 14px;">
+                        Arahkan barcode ke dalam kotak
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                    <button onclick="startScanner()" id="startBtn" style="padding: 12px 24px; background: #48bb78; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        📷 Mulai Scan
+                    </button>
+                    <button onclick="stopScanner()" id="stopBtn" style="padding: 12px 24px; background: #f56565; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: none; align-items: center; gap: 8px;">
+                        ⏹️ Stop Scan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div style="background: white; border-radius: 15px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px;">📦 Detail Barang</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Barcode Terdeteksi</label>
+                    <div id="barcodeDisplay" style="font-size: 24px; font-weight: bold; letter-spacing: 2px; text-align: center; padding: 20px; background: #f7fafc; border-radius: 8px; color: #48bb78; border: 2px solid #48bb78;">
+                        Menunggu scan...
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Jumlah Barang Keluar</label>
+                    <input type="number" id="jumlahInputScanner" placeholder="Masukkan jumlah" min="1" value="1" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Tujuan</label>
+                    <select id="tujuanSelectScanner" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                        <option value="">Pilih tujuan...</option>
+                        <option value="Warung Pak Budi">Warung Pak Budi</option>
+                        <option value="Warung Bu Sri">Warung Bu Sri</option>
+                        <option value="Toko Makmur">Toko Makmur</option>
+                        <option value="Penjualan Langsung">Penjualan Langsung</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Keterangan (Opsional)</label>
+                    <input type="text" id="keteranganInputScanner" placeholder="Tambahkan keterangan jika perlu" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <button onclick="processScan()" id="processScanBtn" disabled style="width: 100%; padding: 15px; background: #48bb78; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                    Proses Barang Keluar
+                </button>
+
+                <div id="resultBoxScanner" style="background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 20px; display: none;"></div>
+            </div>
+
+            <!-- History -->
+            <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px;">📋 Riwayat Scan Hari Ini</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Barcode</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah</th>
+                            <th>Tujuan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scanHistoryTable">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                                Belum ada transaksi hari ini
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Page Laporan (Placeholder) -->
+        <div id="pageLaporan" class="page-content" style="display: none;">
+            <h1 class="page-title">📊 Laporan Penjualan</h1>
+            <div style="background: white; border-radius: 15px; padding: 50px; text-align: center; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                <div style="font-size: 64px; margin-bottom: 20px;">📊</div>
+                <h2 style="color: #2d3748; margin-bottom: 10px;">Fitur Sedang Dalam Pengembangan</h2>
+                <p style="color: #718096;">Laporan penjualan akan segera hadir</p>
+            </div>
+        </div>
+
+        <!-- Page Generator Barcode -->
+        <div id="pageGenerator" class="page-content" style="display: none;">
+            <h1 class="page-title">🔖 Generator Barcode EAN-13</h1>
+            
+            <div id="alertBoxGenerator" style="padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <!-- Form Generator -->
+                <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                    <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px; font-weight: 600;">📝 Buat Barcode Baru</h2>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Nama Produk</label>
+                        <input type="text" id="productNameGen" placeholder="Contoh: Bawang Goreng Original" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Kategori</label>
+                        <select id="categorySelectGen" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                            <option value="">Pilih kategori...</option>
+                            <option value="Original">Original</option>
+                            <option value="Pedas">Pedas</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Manis">Manis</option>
+                            <option value="Gurih">Gurih</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Kode Produk (3 digit) - Opsional</label>
+                        <input type="text" id="productCodeGen" placeholder="001" maxlength="3" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                        <small style="color: #718096; font-size: 12px;">Kosongkan untuk generate otomatis</small>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 8px;">Barcode EAN-13 (13 digit)</label>
+                        <input type="text" id="barcodeInputGen" placeholder="8991234567001" maxlength="13" readonly style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; background: #f7fafc;">
+                        <small style="color: #718096; font-size: 12px;">Generate otomatis atau edit manual</small>
+                    </div>
+
+                    <button onclick="generateBarcodeInDashboard()" style="width: 100%; padding: 15px; background: #e65100; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px;">
+                        🎲 Generate Barcode
+                    </button>
+                    <button onclick="downloadBarcodeInDashboard()" id="downloadBtnGen" disabled style="width: 100%; padding: 15px; background: #48bb78; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px;">
+                        💾 Download PNG
+                    </button>
+                    <button onclick="addToInventory()" id="addInventoryBtn" disabled style="width: 100%; padding: 15px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                        ➕ Tambah ke Stok Barang
+                    </button>
+                </div>
+
+                <!-- Preview -->
+                <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                    <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px; font-weight: 600;">👁️ Preview Barcode</h2>
+                    
+                    <div style="text-align: center; padding: 30px; background: #f7fafc; border-radius: 8px; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <p style="color: #718096; font-size: 18px;" id="previewTextGen">
+                            Klik "Generate Barcode" untuk membuat
+                        </p>
+                        <canvas id="barcodeCanvasGen" style="margin: 20px 0; background: white; padding: 20px; border-radius: 8px;"></canvas>
+                        
+                        <div id="barcodeInfoGen" style="display: none; margin-top: 20px; padding: 15px; background: white; border-radius: 8px; width: 100%;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                <span style="font-weight: 600; color: #4a5568;">Nama Produk:</span>
+                                <span style="color: #2d3748;" id="infoNameGen">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                <span style="font-weight: 600; color: #4a5568;">Kategori:</span>
+                                <span style="color: #2d3748;" id="infoCategoryGen">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                <span style="font-weight: 600; color: #4a5568;">Barcode:</span>
+                                <span style="color: #2d3748;" id="infoBarcodeGen">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                <span style="font-weight: 600; color: #4a5568;">Format:</span>
+                                <span style="color: #2d3748;">EAN-13</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preset Barcodes -->
+            <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                <h2 style="font-size: 20px; color: #2d3748; margin-bottom: 20px; font-weight: 600;">📦 Produk Bawang Goreng Store</h2>
+                <div id="presetGridGen" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;"></div>
+            </div>
+        </div>
+    </main>
+    </div>
+
+    <!-- Modal Tambah/Edit Barang -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Tambah Barang</div>
+            <div class="form-group">
+                <label>Nama Barang</label>
+                <input type="text" id="inputNamaBarang" placeholder="Masukkan nama barang">
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="inputDeskripsi" rows="3" placeholder="Masukkan deskripsi"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Stok</label>
+                <input type="number" id="inputStok" placeholder="Masukkan jumlah stok">
+            </div>
+            <div class="form-group">
+                <label>Harga Satuan (Rp)</label>
+                <input type="number" id="inputHarga" placeholder="Masukkan harga">
+            </div>
+            <div class="form-group">
+                <label>Kategori</label>
+                <input type="text" id="inputKategori" placeholder="Masukkan kategori">
+            </div>
+            <div class="form-group">
+                <label>Barcode (13 digit)</label>
+                <input type="text" id="inputBarcode" placeholder="Masukkan barcode EAN-13" maxlength="13">
+                <small style="color: #718096; font-size: 12px;">Generate di menu "Generator Barcode" atau input manual</small>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-save" onclick="saveBarang()">Simpan</button>
+                <button class="btn-cancel" onclick="closeModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Load QuaggaJS untuk barcode scanner -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- Load JsBarcode untuk generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+    
+    <script>
+        let currentEditId = null;
+        let stokData = [];
+        let currentUser = null;
+        let isScanning = false;
+        let lastBarcode = '';
+        let todayTransactions = [];
+        let currentGeneratedBarcode = '';
+        let generatedProductData = {};
+
+        // Inisialisasi data stok default jika belum ada
+        function initializeStokData() {
+            let savedData = localStorage.getItem('stokBarang');
+            if (!savedData) {
+                // Data default HANYA jika benar-benar kosong
+                const defaultStok = [
+                    {
+                        id: 1,
+                        namaBarang: "Bawang Goreng Original",
+                        deskripsi: "Bawang goreng kualitas premium",
+                        stokTersedia: 150,
+                        hargaSatuan: 25000,
+                        kategori: "Original",
+                        barcode: "8991234567001",
+                        supplier: "CV. Bawang Jaya",
+                        minStok: 20,
+                        lokasi: "Rak A1"
+                    },
+                    {
+                        id: 2,
+                        namaBarang: "Bawang Goreng Pedas",
+                        deskripsi: "Bawang goreng dengan rasa pedas",
+                        stokTersedia: 89,
+                        hargaSatuan: 28000,
+                        kategori: "Pedas",
+                        barcode: "8991234567002",
+                        supplier: "CV. Bawang Jaya",
+                        minStok: 20,
+                        lokasi: "Rak A2"
+                    },
+                    {
+                        id: 3,
+                        namaBarang: "Bawang Goreng Premium",
+                        deskripsi: "Kualitas terbaik untuk restoran",
+                        stokTersedia: 61,
+                        hargaSatuan: 35000,
+                        kategori: "Premium",
+                        barcode: "8991234567003",
+                        supplier: "PT. Premium Food",
+                        minStok: 15,
+                        lokasi: "Rak B1"
+                    },
+                    {
+                        id: 4,
+                        namaBarang: "Bawang Goreng Manis",
+                        deskripsi: "Rasa manis yang unik",
+                        stokTersedia: 45,
+                        hargaSatuan: 27000,
+                        kategori: "Manis",
+                        barcode: "8991234567004",
+                        supplier: "CV. Bawang Jaya",
+                        minStok: 20,
+                        lokasi: "Rak A3"
+                    },
+                    {
+                        id: 5,
+                        namaBarang: "Bawang Goreng Gurih",
+                        deskripsi: "Extra gurih dan renyah",
+                        stokTersedia: 120,
+                        hargaSatuan: 26000,
+                        kategori: "Gurih",
+                        barcode: "8991234567005",
+                        supplier: "CV. Bawang Jaya",
+                        minStok: 25,
+                        lokasi: "Rak A4"
+                    }
+                ];
+                localStorage.setItem('stokBarang', JSON.stringify(defaultStok));
+                console.log('📦 Default stock data initialized');
+            } else {
+                console.log('📦 Stock data loaded from localStorage');
+            }
+        }
+
+        // Cek autentikasi saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadStokFromServer(); // Load dari server FIRST
+            loadTodayTransactions();
+            loadGeneratorPresets();
+        });
+
+        // Cek apakah user sudah login
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userStr = localStorage.getItem('currentUser');
+            
+            if (!isLoggedIn || !userStr) {
+                // Redirect ke login jika belum login
+                alert('Silakan login terlebih dahulu!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            console.log('👤 User login:', currentUser.name);
+            console.log('📧 Email:', currentUser.email);
+            console.log('👑 Role:', currentUser.role);
+            
+            // Update user info di header
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            const roleBadge = document.getElementById('userRoleBadge');
+            if (currentUser.role === 'superadmin') {
+                roleBadge.textContent = '👑 Super Admin';
+                roleBadge.style.background = 'rgba(255,215,0,0.3)';
+            } else if (currentUser.role === 'admin') {
+                roleBadge.textContent = '⭐ Admin';
+                roleBadge.style.background = 'rgba(255,255,255,0.3)';
+            } else {
+                roleBadge.textContent = '👤 User';
+                roleBadge.style.background = 'rgba(255,255,255,0.2)';
+            }
+        }
+
+        // Load data dari localStorage
+        function loadDataFromStorage() {
+            const savedData = localStorage.getItem('stokBarang');
+            if (savedData) {
+                stokData = JSON.parse(savedData);
+                console.log('📦 Data stok dimuat:', stokData.length, 'items');
+                console.log('🔍 Data:', stokData.map(item => `${item.namaBarang} (${item.barcode || 'no barcode'})`).join(', '));
+                renderTable();
+            } else {
+                console.log('⚠️ Tidak ada data stok');
+                stokData = [];
+                renderTable();
+            }
+        }
+
+        // Render tabel
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (stokData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #999;">Tidak ada data stok barang</td></tr>';
+                return;
+            }
+
+            stokData.forEach((item, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.namaBarang}</td>
+                    <td style="font-family: monospace; font-size: 13px; color: #667eea;">${item.barcode || '-'}</td>
+                    <td>${item.deskripsi}</td>
+                    <td>${item.stokTersedia}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="editBarang(${item.id})">Edit</button>
+                            <button class="btn-delete" onclick="hapusBarang(${item.id})">Hapus</button>
+                        </div>
+                    </td>
+                `;
+            });
+
+            // Simpan ke localStorage setiap kali render
+            saveToLocalStorage();
+        }
+
+        // Simpan ke localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('stokBarang', JSON.stringify(stokData));
+            console.log('💾 Data tersimpan ke localStorage');
+            
+            // Auto-sync ke server (stok-barang.json)
+            saveStokToServer();
+        }
+
+        // Sync semua data ke data.json
+        function syncToDataJson() {
+            // Ambil semua data dari localStorage
+            const users = JSON.parse(localStorage.getItem('usersData') || '[]');
+            const stok = JSON.parse(localStorage.getItem('stokBarang') || '[]');
+            const transaksi = JSON.parse(localStorage.getItem('todayTransactions') || '[]');
+
+            // Kirim ke server
+            fetch('save-json.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    users: users,
+                    stokBarang: stok,
+                    transaksiBarangKeluar: transaksi
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('✅ data.json updated successfully');
+                    console.log('📊 Stats:', data.stats);
+                    console.log('⏰ Timestamp:', data.timestamp);
+                } else {
+                    console.error('❌ Failed to update data.json:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error syncing to data.json:', error);
+                console.log('⚠️ Data tetap tersimpan di localStorage');
+            });
+        }
+
+        // Load dari localStorage jika ada
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('stokBarang');
+            if (saved) {
+                stokData = JSON.parse(saved);
+                renderTable();
+            }
+        }
+
+        // Buka modal
+        function openModal(isEdit = false) {
+            document.getElementById('modal').classList.add('show');
+            document.getElementById('modalTitle').textContent = isEdit ? 'Edit Barang' : 'Tambah Barang';
+            
+            if (!isEdit) {
+                clearForm();
+            }
+        }
+
+        // Tutup modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+            clearForm();
+            currentEditId = null;
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('inputNamaBarang').value = '';
+            document.getElementById('inputDeskripsi').value = '';
+            document.getElementById('inputStok').value = '';
+            document.getElementById('inputHarga').value = '';
+            document.getElementById('inputKategori').value = '';
+            document.getElementById('inputBarcode').value = '';
+        }
+
+        // Simpan barang
+        function saveBarang() {
+            const namaBarang = document.getElementById('inputNamaBarang').value.trim();
+            const deskripsi = document.getElementById('inputDeskripsi').value.trim();
+            const stok = parseInt(document.getElementById('inputStok').value);
+            const harga = parseInt(document.getElementById('inputHarga').value);
+            const kategori = document.getElementById('inputKategori').value.trim();
+            const barcode = document.getElementById('inputBarcode').value.trim();
+
+            if (!namaBarang || !deskripsi || !stok || !harga || !kategori) {
+                alert('Mohon isi semua field yang wajib!');
+                return;
+            }
+
+            // Validasi barcode jika diisi
+            if (barcode && (barcode.length !== 13 || !/^\d{13}$/.test(barcode))) {
+                alert('Barcode harus 13 digit angka!');
+                return;
+            }
+
+            // Check barcode duplikat
+            if (barcode) {
+                const duplicate = stokData.find(item => 
+                    item.barcode === barcode && item.id !== currentEditId
+                );
+                if (duplicate) {
+                    alert(`Barcode sudah digunakan oleh: ${duplicate.namaBarang}`);
+                    return;
+                }
+            }
+
+            if (currentEditId) {
+                // Update existing
+                const index = stokData.findIndex(item => item.id === currentEditId);
+                if (index !== -1) {
+                    stokData[index] = {
+                        ...stokData[index],
+                        namaBarang,
+                        deskripsi,
+                        stokTersedia: stok,
+                        hargaSatuan: harga,
+                        kategori,
+                        barcode: barcode || stokData[index].barcode || ''
+                    };
+                }
+            } else {
+                // Tambah baru
+                const newId = stokData.length > 0 ? Math.max(...stokData.map(item => item.id)) + 1 : 1;
+                stokData.push({
+                    id: newId,
+                    namaBarang,
+                    deskripsi,
+                    stokTersedia: stok,
+                    hargaSatuan: harga,
+                    kategori,
+                    barcode: barcode || '',
+                    supplier: 'CV. Bawang Jaya',
+                    minStok: 20,
+                    lokasi: 'Rak A'
+                });
+            }
+
+            renderTable();
+            closeModal();
+            alert('Data berhasil disimpan!');
+            
+            // Sync ke server
+            saveStokToServer();
+            
+            // Log untuk monitoring
+            console.log('✅ Data stok berhasil disimpan');
+            console.log('📊 Total items:', stokData.length);
+        }
+
+        // Edit barang
+        function editBarang(id) {
+            const item = stokData.find(item => item.id === id);
+            if (item) {
+                currentEditId = id;
+                document.getElementById('inputNamaBarang').value = item.namaBarang;
+                document.getElementById('inputDeskripsi').value = item.deskripsi;
+                document.getElementById('inputStok').value = item.stokTersedia;
+                document.getElementById('inputHarga').value = item.hargaSatuan;
+                document.getElementById('inputKategori').value = item.kategori;
+                document.getElementById('inputBarcode').value = item.barcode || '';
+                openModal(true);
+            }
+        }
+
+        // Hapus barang
+        function hapusBarang(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
+                stokData = stokData.filter(item => item.id !== id);
+                renderTable();
+                alert('Barang berhasil dihapus!');
+                
+                // Sync ke server
+                saveStokToServer();
+                
+                console.log('🗑️ Barang dihapus, sisa:', stokData.length, 'items');
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                // Hapus session login
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                
+                // PENTING: Data stok TIDAK dihapus, tetap di localStorage
+                console.log('👋 Logout berhasil');
+                console.log('💾 Data stok tersimpan untuk login berikutnya');
+                
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Toggle Sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // === NAVIGATION ===
+        function showPage(pageName) {
+            // Hide all pages
+            document.getElementById('pageStok').style.display = 'none';
+            document.getElementById('pageScanner').style.display = 'none';
+            document.getElementById('pageGenerator').style.display = 'none';
+            document.getElementById('pageLaporan').style.display = 'none';
+
+            // Remove active class from all menu
+            document.getElementById('menuStok').classList.remove('active');
+            document.getElementById('menuScanner').classList.remove('active');
+            document.getElementById('menuGenerator').classList.remove('active');
+            document.getElementById('menuLaporan').classList.remove('active');
+
+            // Show selected page
+            if (pageName === 'stok') {
+                document.getElementById('pageStok').style.display = 'block';
+                document.getElementById('menuStok').classList.add('active');
+                if (isScanning) stopScanner();
+            } else if (pageName === 'scanner') {
+                document.getElementById('pageScanner').style.display = 'block';
+                document.getElementById('menuScanner').classList.add('active');
+                updateScannerStats();
+            } else if (pageName === 'generator') {
+                document.getElementById('pageGenerator').style.display = 'block';
+                document.getElementById('menuGenerator').classList.add('active');
+                if (isScanning) stopScanner();
+            } else if (pageName === 'laporan') {
+                document.getElementById('pageLaporan').style.display = 'block';
+                document.getElementById('menuLaporan').classList.add('active');
+                if (isScanning) stopScanner();
+            }
+        }
+
+        // === BARCODE SCANNER FUNCTIONS ===
+        function startScanner() {
+            if (isScanning) return;
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    initQuagga();
+                })
+                .catch(function(err) {
+                    showScanAlert('error', 'Tidak dapat mengakses kamera! Pastikan izin kamera diaktifkan.');
+                    console.error('Camera error:', err);
+                });
+        }
+
+        function initQuagga() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#interactive'),
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                },
+                locate: true,
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                frequency: 10
+            }, function(err) {
+                if (err) {
+                    console.error('Quagga init error:', err);
+                    showScanAlert('error', 'Error menginisialisasi scanner: ' + err);
+                    return;
+                }
+                
+                Quagga.start();
+                isScanning = true;
+                
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'flex';
+                
+                showScanAlert('success', 'Kamera aktif! Arahkan barcode ke kotak hijau.');
+            });
+
+            Quagga.onDetected(onBarcodeDetected);
+        }
+
+        function stopScanner() {
+            if (!isScanning) return;
+
+            Quagga.stop();
+            isScanning = false;
+            
+            document.getElementById('startBtn').style.display = 'flex';
+            document.getElementById('stopBtn').style.display = 'none';
+            
+            showScanAlert('info', 'Scanner dihentikan.');
+        }
+
+        function onBarcodeDetected(result) {
+            const code = result.codeResult.code;
+            
+            if (code === lastBarcode) return;
+            
+            lastBarcode = code;
+            playBeep();
+            
+            document.getElementById('barcodeDisplay').textContent = code;
+            document.getElementById('processScanBtn').disabled = false;
+            
+            const barang = stokData.find(b => b.barcode === code);
+            if (barang) {
+                showScanAlert('success', `✅ Barcode terdeteksi: ${barang.namaBarang}`);
+            } else {
+                showScanAlert('error', '❌ Barcode tidak terdaftar di database!');
+            }
+            
+            setTimeout(() => { lastBarcode = ''; }, 2000);
+        }
+
+        function playBeep() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function showScanAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.style.display = 'block';
+            alertBox.style.background = type === 'success' ? '#c6f6d5' : type === 'error' ? '#fed7d7' : '#bee3f8';
+            alertBox.style.color = type === 'success' ? '#22543d' : type === 'error' ? '#742a2a' : '#2c5282';
+            alertBox.style.border = `1px solid ${type === 'success' ? '#9ae6b4' : type === 'error' ? '#fc8181' : '#90cdf4'}`;
+            alertBox.textContent = message;
+            
+            setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+        }
+
+        function processScan() {
+            const barcode = document.getElementById('barcodeDisplay').textContent;
+            const jumlah = parseInt(document.getElementById('jumlahInputScanner').value);
+            const tujuan = document.getElementById('tujuanSelectScanner').value;
+            const keterangan = document.getElementById('keteranganInputScanner').value.trim();
+
+            if (barcode === 'Menunggu scan...') {
+                showScanAlert('error', 'Scan barcode terlebih dahulu!');
+                return;
+            }
+
+            if (!jumlah || jumlah < 1) {
+                showScanAlert('error', 'Jumlah barang harus minimal 1!');
+                return;
+            }
+
+            if (!tujuan) {
+                showScanAlert('error', 'Pilih tujuan barang!');
+                return;
+            }
+
+            const barang = stokData.find(b => b.barcode === barcode);
+
+            if (!barang) {
+                showScanResult(false, 'Barcode tidak ditemukan di database!');
+                return;
+            }
+
+            if (barang.stokTersedia < jumlah) {
+                showScanResult(false, `Stok tidak cukup! Tersedia: ${barang.stokTersedia}`);
+                return;
+            }
+
+            const stokSebelum = barang.stokTersedia;
+            barang.stokTersedia -= jumlah;
+            saveToLocalStorage();
+            renderTable();
+
+            const transaksi = {
+                id: todayTransactions.length + 1,
+                tanggal: new Date().toISOString(),
+                barangId: barang.id,
+                namaBarang: barang.namaBarang,
+                barcode: barcode,
+                jumlah: jumlah,
+                tujuan: tujuan,
+                keterangan: keterangan,
+                petugas: currentUser.name
+            };
+
+            todayTransactions.unshift(transaksi);
+            localStorage.setItem('todayTransactions', JSON.stringify(todayTransactions));
+
+            // Sync ke data.json
+            syncToDataJson();
+
+            showScanResult(true, 'Berhasil!', {
+                nama: barang.namaBarang,
+                kategori: barang.kategori,
+                stokSebelum: stokSebelum,
+                jumlah: jumlah,
+                stokSisa: barang.stokTersedia
+            });
+
+            showScanAlert('success', `✅ Transaksi berhasil! Stok ${barang.namaBarang} tersisa: ${barang.stokTersedia}`);
+            
+            renderScanHistory();
+            updateScannerStats();
+
+            setTimeout(() => {
+                document.getElementById('barcodeDisplay').textContent = 'Menunggu scan...';
+                document.getElementById('jumlahInputScanner').value = '1';
+                document.getElementById('keteranganInputScanner').value = '';
+                document.getElementById('processScanBtn').disabled = true;
+                document.getElementById('resultBoxScanner').style.display = 'none';
+            }, 3000);
+        }
+
+        function showScanResult(success, message, data = null) {
+            const resultBox = document.getElementById('resultBoxScanner');
+            resultBox.style.display = 'block';
+            resultBox.style.background = success ? '#f0fff4' : '#fff5f5';
+            resultBox.style.borderColor = success ? '#48bb78' : '#f56565';
+
+            if (success && data) {
+                resultBox.innerHTML = `
+                    <h3 style="margin-bottom: 15px;">Detail Barang:</h3>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                        <span style="font-weight: 600; color: #4a5568;">Nama Barang:</span>
+                        <span style="color: #2d3748; font-weight: 500;">${data.nama}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                        <span style="font-weight: 600; color: #4a5568;">Kategori:</span>
+                        <span style="color: #2d3748; font-weight: 500;">${data.kategori}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                        <span style="font-weight: 600; color: #4a5568;">Stok Sebelum:</span>
+                        <span style="color: #2d3748; font-weight: 500;">${data.stokSebelum}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                        <span style="font-weight: 600; color: #4a5568;">Jumlah Keluar:</span>
+                        <span style="color: #2d3748; font-weight: 500;">${data.jumlah}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                        <span style="font-weight: 600; color: #4a5568;">Stok Tersisa:</span>
+                        <span style="color: #2d3748; font-weight: 500;">${data.stokSisa}</span>
+                    </div>
+                `;
+            } else {
+                resultBox.innerHTML = `<h3 style="color: #f56565; text-align: center;">${message}</h3>`;
+            }
+        }
+
+        function loadTodayTransactions() {
+            const saved = localStorage.getItem('todayTransactions');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (saved) {
+                const all = JSON.parse(saved);
+                todayTransactions = all.filter(t => t.tanggal.split('T')[0] === today);
+            }
+            
+            renderScanHistory();
+        }
+
+        function renderScanHistory() {
+            const tbody = document.getElementById('scanHistoryTable');
+            
+            if (todayTransactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #999;">Belum ada transaksi hari ini</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = todayTransactions.map(t => {
+                const time = new Date(t.tanggal).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <tr>
+                        <td>${time}</td>
+                        <td>${t.barcode}</td>
+                        <td>${t.namaBarang}</td>
+                        <td>${t.jumlah}</td>
+                        <td>${t.tujuan}</td>
+                        <td><span style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #c6f6d5; color: #22543d;">Sukses</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateScannerStats() {
+            const totalScan = todayTransactions.length;
+            const totalBarangKeluar = todayTransactions.reduce((sum, t) => sum + t.jumlah, 0);
+            
+            document.getElementById('statTotalScan').textContent = totalScan;
+            document.getElementById('statBarangKeluar').textContent = totalBarangKeluar;
+            
+            if (todayTransactions.length > 0) {
+                const lastTime = new Date(todayTransactions[0].tanggal).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('statLastTime').textContent = lastTime;
+            }
+        }
+
+        // Stop scanner saat pindah halaman
+        window.addEventListener('beforeunload', function() {
+            if (isScanning) stopScanner();
+        });
+
+        // === BARCODE GENERATOR FUNCTIONS ===
+        const presetProductsGen = [
+            { name: 'Bawang Goreng Original', category: 'Original', barcode: '8991234567001' },
+            { name: 'Bawang Goreng Pedas', category: 'Pedas', barcode: '8991234567002' },
+            { name: 'Bawang Goreng Premium', category: 'Premium', barcode: '8991234567003' },
+            { name: 'Bawang Goreng Manis', category: 'Manis', barcode: '8991234567004' },
+            { name: 'Bawang Goreng Gurih', category: 'Gurih', barcode: '8991234567005' },
+        ];
+
+        function loadGeneratorPresets() {
+            const grid = document.getElementById('presetGridGen');
+            grid.innerHTML = presetProductsGen.map(product => `
+                <div onclick="loadPresetGen('${product.barcode}', '${product.name}', '${product.category}')" style="padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                    <div style="font-weight: 600; color: #2d3748; margin-bottom: 5px;">${product.name}</div>
+                    <div style="font-family: monospace; color: #718096; font-size: 14px;">${product.barcode}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadPresetGen(barcode, name, category) {
+            document.getElementById('productNameGen').value = name;
+            document.getElementById('categorySelectGen').value = category;
+            document.getElementById('barcodeInputGen').value = barcode;
+            
+            showAlertGen('info', `Loaded: ${name}`);
+            setTimeout(() => generateBarcodeInDashboard(), 300);
+        }
+
+        function generateBarcodeInDashboard() {
+            const productName = document.getElementById('productNameGen').value.trim();
+            const category = document.getElementById('categorySelectGen').value;
+            let barcodeValue = document.getElementById('barcodeInputGen').value.trim();
+
+            if (!productName) {
+                showAlertGen('error', 'Nama produk harus diisi!');
+                return;
+            }
+
+            if (!category) {
+                showAlertGen('error', 'Pilih kategori produk!');
+                return;
+            }
+
+            if (!barcodeValue) {
+                const prefix = '899123456';
+                const productCode = document.getElementById('productCodeGen').value || String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                barcodeValue = prefix + productCode;
+                
+                const checkDigit = calculateEAN13CheckDigit(barcodeValue);
+                barcodeValue = barcodeValue + checkDigit;
+                
+                document.getElementById('barcodeInputGen').value = barcodeValue;
+            }
+
+            if (barcodeValue.length !== 13 || !/^\d{13}$/.test(barcodeValue)) {
+                showAlertGen('error', 'Barcode harus 13 digit angka!');
+                return;
+            }
+
+            try {
+                const canvas = document.getElementById('barcodeCanvasGen');
+                JsBarcode(canvas, barcodeValue, {
+                    format: "EAN13",
+                    width: 2,
+                    height: 100,
+                    displayValue: true,
+                    fontSize: 16,
+                    margin: 10
+                });
+
+                currentGeneratedBarcode = barcodeValue;
+                generatedProductData = {
+                    name: productName,
+                    category: category,
+                    barcode: barcodeValue
+                };
+
+                document.getElementById('infoNameGen').textContent = productName;
+                document.getElementById('infoCategoryGen').textContent = category;
+                document.getElementById('infoBarcodeGen').textContent = barcodeValue;
+                document.getElementById('barcodeInfoGen').style.display = 'block';
+                document.getElementById('previewTextGen').style.display = 'none';
+
+                document.getElementById('downloadBtnGen').disabled = false;
+                document.getElementById('addInventoryBtn').disabled = false;
+
+                showAlertGen('success', `✅ Barcode berhasil dibuat: ${barcodeValue}`);
+            } catch (error) {
+                showAlertGen('error', 'Error generating barcode: ' + error.message);
+            }
+        }
+
+        function calculateEAN13CheckDigit(barcode12) {
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                const digit = parseInt(barcode12[i]);
+                sum += (i % 2 === 0) ? digit : digit * 3;
+            }
+            const checkDigit = (10 - (sum % 10)) % 10;
+            return checkDigit.toString();
+        }
+
+        function downloadBarcodeInDashboard() {
+            if (!currentGeneratedBarcode) {
+                showAlertGen('error', 'Generate barcode terlebih dahulu!');
+                return;
+            }
+
+            const canvas = document.getElementById('barcodeCanvasGen');
+            const productName = generatedProductData.name;
+            
+            const link = document.createElement('a');
+            link.download = `barcode_${productName.replace(/\s+/g, '_')}_${currentGeneratedBarcode}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            showAlertGen('success', '✅ Barcode berhasil didownload!');
+        }
+
+        function addToInventory() {
+            if (!currentGeneratedBarcode) {
+                showAlertGen('error', 'Generate barcode terlebih dahulu!');
+                return;
+            }
+
+            // Check if barcode already exists
+            const existing = stokData.find(item => item.barcode === currentGeneratedBarcode);
+            if (existing) {
+                showAlertGen('error', 'Barcode sudah terdaftar di stok barang!');
+                return;
+            }
+
+            // Pindah ke halaman stok dan buka modal
+            showPage('stok');
+            
+            // Tunggu sebentar agar halaman sudah ter-render
+            setTimeout(() => {
+                openModal(false);
+                
+                // Fill form dengan data dari generator
+                document.getElementById('inputNamaBarang').value = generatedProductData.name;
+                document.getElementById('inputKategori').value = generatedProductData.category;
+                document.getElementById('inputBarcode').value = currentGeneratedBarcode;
+                
+                // Set default values
+                document.getElementById('inputDeskripsi').value = `${generatedProductData.name} - ${generatedProductData.category}`;
+                document.getElementById('inputStok').value = '100';
+                document.getElementById('inputHarga').value = '25000';
+                
+                alert('✅ Data barcode sudah diisi! Lengkapi Stok dan Harga, lalu klik Simpan.');
+            }, 100);
+        }
+
+        function showAlertGen(type, message) {
+            const alertBox = document.getElementById('alertBoxGenerator');
+            alertBox.style.display = 'block';
+            alertBox.style.background = type === 'success' ? '#c6f6d5' : type === 'error' ? '#fed7d7' : '#bee3f8';
+            alertBox.style.color = type === 'success' ? '#22543d' : type === 'error' ? '#742a2a' : '#2c5282';
+            alertBox.style.border = `1px solid ${type === 'success' ? '#9ae6b4' : type === 'error' ? '#fc8181' : '#90cdf4'}`;
+            alertBox.textContent = message;
+            
+            setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+        }
+
+        // Auto-generate barcode on product code input
+        document.addEventListener('DOMContentLoaded', function() {
+            const productCodeInput = document.getElementById('productCodeGen');
+            if (productCodeInput) {
+                productCodeInput.addEventListener('input', function() {
+                    const code = this.value;
+                    if (code.length === 3) {
+                        const prefix = '899123456';
+                        const barcode12 = prefix + code;
+                        const checkDigit = calculateEAN13CheckDigit(barcode12);
+                        document.getElementById('barcodeInputGen').value = barcode12 + checkDigit;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
