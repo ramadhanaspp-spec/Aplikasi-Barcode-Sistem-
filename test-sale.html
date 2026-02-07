@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Penjualan - Bawang Goreng Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/scan-style.css">
+    <style>
+        .test-controls {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-controls h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .btn-test {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .btn-test:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <main class="main-content" style="margin-left: 0;">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title">🧪 Test Form Penjualan</h1>
+            </div>
+
+            <!-- Test Controls -->
+            <div class="test-controls">
+                <h3>⚙️ Testing Controls</h3>
+                <button class="btn-test" onclick="testGenerateProduct()">1. Generate Test Product</button>
+                <button class="btn-test" onclick="testSimulateScan()">2. Simulate Scan</button>
+                <button class="btn-test" onclick="testCheckData()">3. Check LocalStorage</button>
+                <button class="btn-test" onclick="testClearAll()">4. Clear All Data</button>
+                <div id="testOutput" style="margin-top: 15px; padding: 10px; background: white; border-radius: 8px; display: none;"></div>
+            </div>
+
+            <!-- Product Info Section -->
+            <div class="product-info-section card">
+                <div class="card-header">
+                    <h2 class="section-title">Informasi Produk</h2>
+                </div>
+                
+                <div class="product-info-content" id="productInfo">
+                    <div class="empty-product-info">
+                        <div class="empty-icon">🔍</div>
+                        <p class="empty-text">Klik "Simulate Scan" untuk menampilkan produk</p>
+                    </div>
+                </div>
+
+                <!-- Sale Form -->
+                <div class="sale-form" id="saleForm" style="display: none;">
+                    <form id="saleFormElement">
+                        <div class="form-group">
+                            <label for="productName">Nama Produk</label>
+                            <input type="text" id="productName" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productBarcode">Barcode</label>
+                            <input type="text" id="productBarcode" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productPrice">Harga Satuan</label>
+                            <input type="text" id="productPrice" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="availableStock">Stok Tersedia</label>
+                            <input type="text" id="availableStock" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="saleQty">Jumlah Penjualan</label>
+                            <input type="number" id="saleQty" min="1" required placeholder="Masukkan jumlah">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transactionType">Tipe Transaksi</label>
+                            <select id="transactionType" required>
+                                <option value="cash">Cash</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="qris">QRIS</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="resetSaleBtn">Reset</button>
+                            <button type="submit" class="btn-primary">
+                                <span class="btn-icon">✓</span>
+                                Proses Penjualan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Import functions from js/scan-script.js
+        let scannedProduct = null;
+
+        // Test Functions
+        function testGenerateProduct() {
+            const testProduct = {
+                name: "Bawang Goreng Test 250g",
+                barcode: "BG001TEST123",
+                variant: "Original",
+                weight: "250",
+                price: 25000,
+                description: "Test Product - 250 gram",
+                stock: 50,
+                productionDate: "2025-02-06",
+                expiryDate: "2025-04-07",
+                createdAt: new Date().toISOString()
+            };
+
+            let items = JSON.parse(localStorage.getItem('bawangGorenStoreItems') || '[]');
+            
+            // Remove old test product
+            items = items.filter(item => item.barcode !== testProduct.barcode);
+            
+            // Add new test product
+            items.push(testProduct);
+            localStorage.setItem('bawangGorenStoreItems', JSON.stringify(items));
+            
+            showTestOutput('✅ Test product created!<br>Barcode: ' + testProduct.barcode + '<br>Stock: ' + testProduct.stock);
+        }
+
+        function testSimulateScan() {
+            const items = JSON.parse(localStorage.getItem('bawangGorenStoreItems') || '[]');
+            const product = items.find(item => item.barcode === 'BG001TEST123');
+            
+            if (!product) {
+                showTestOutput('❌ Test product not found! Click "Generate Test Product" first.');
+                return;
+            }
+
+            scannedProduct = product;
+            displayProductInfo(product);
+            showTestOutput('✅ Product scanned successfully!<br>Name: ' + product.name + '<br>Price: Rp ' + product.price.toLocaleString('id-ID'));
+        }
+
+        function testCheckData() {
+            const items = JSON.parse(localStorage.getItem('bawangGorenStoreItems') || '[]');
+            const sales = JSON.parse(localStorage.getItem('bawangGorenStoreSales') || '[]');
+            
+            let output = '<strong>📦 Inventory Items:</strong> ' + items.length + '<br>';
+            output += '<strong>💰 Sales Records:</strong> ' + sales.length + '<br><br>';
+            
+            if (sales.length > 0) {
+                output += '<strong>Last Sale:</strong><br>';
+                const lastSale = sales[0];
+                output += 'Product: ' + lastSale.productName + '<br>';
+                output += 'Qty: ' + lastSale.quantity + '<br>';
+                output += 'Price: Rp ' + (lastSale.price || 0).toLocaleString('id-ID') + '<br>';
+                output += 'Total: Rp ' + ((lastSale.quantity * lastSale.price) || 0).toLocaleString('id-ID') + '<br>';
+                output += 'Type: ' + lastSale.transactionType;
+            }
+            
+            showTestOutput(output);
+        }
+
+        function testClearAll() {
+            if (confirm('Clear all test data?')) {
+                localStorage.removeItem('bawangGorenStoreItems');
+                localStorage.removeItem('bawangGorenStoreSales');
+                location.reload();
+            }
+        }
+
+        function showTestOutput(message) {
+            const output = document.getElementById('testOutput');
+            output.innerHTML = message;
+            output.style.display = 'block';
+        }
+
+        // Copy all functions from js/scan-script.js
+        function setupSaleFormHandler() {
+            const form = document.getElementById('saleFormElement');
+            const resetBtn = document.getElementById('resetSaleBtn');
+            
+            if (form) {
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+                
+                newForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Form submitted!');
+                    handleSale(e);
+                });
+                
+                console.log('✅ Sale form handler attached');
+            }
+            
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                    resetScan();
+                });
+            }
+        }
+
+        function displayProductInfo(product) {
+            const productInfo = document.getElementById('productInfo');
+            const saleForm = document.getElementById('saleForm');
+            
+            let stockBadge = '';
+            if (product.stock === 0) {
+                stockBadge = '<span class="stock-badge stock-empty">Stok Habis</span>';
+            } else if (product.stock < 50) {
+                stockBadge = '<span class="stock-badge stock-low">' + product.stock + ' unit</span>';
+            } else {
+                stockBadge = '<span class="stock-badge stock-available">' + product.stock + ' unit</span>';
+            }
+            
+            const priceFormatted = product.price ? 'Rp ' + product.price.toLocaleString('id-ID') : 'Tidak tersedia';
+            
+            productInfo.innerHTML = `
+                <div class="product-details">
+                    <div class="product-header">
+                        <div class="product-icon">📦</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-barcode-display">${product.barcode}</div>
+                    </div>
+                    <ul class="product-info-list">
+                        <li class="info-item">
+                            <span class="info-label">Harga</span>
+                            <span class="info-value" style="color: #28a745; font-weight: 700;">${priceFormatted}</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Stok</span>
+                            <span class="info-value">${stockBadge}</span>
+                        </li>
+                    </ul>
+                </div>
+            `;
+            
+            if (product.stock > 0) {
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productBarcode').value = product.barcode;
+                document.getElementById('productPrice').value = priceFormatted;
+                document.getElementById('availableStock').value = product.stock + ' unit';
+                document.getElementById('saleQty').value = '';
+                document.getElementById('saleQty').max = product.stock;
+                document.getElementById('transactionType').value = 'cash';
+                
+                saleForm.style.display = 'block';
+                setTimeout(() => setupSaleFormHandler(), 100);
+            }
+        }
+
+        function handleSale(event) {
+            event.preventDefault();
+            console.log('=== HANDLE SALE TRIGGERED ===');
+            
+            if (!scannedProduct) {
+                alert('Tidak ada produk!');
+                return;
+            }
+            
+            const qty = parseInt(document.getElementById('saleQty').value);
+            const transactionType = document.getElementById('transactionType').value;
+            
+            console.log('Qty:', qty, 'Type:', transactionType);
+            
+            if (!qty || qty <= 0) {
+                alert('Jumlah harus lebih dari 0!');
+                return;
+            }
+            
+            // Update stock
+            const items = JSON.parse(localStorage.getItem('bawangGorenStoreItems') || '[]');
+            const itemIndex = items.findIndex(item => item.barcode === scannedProduct.barcode);
+            
+            if (itemIndex !== -1) {
+                items[itemIndex].stock -= qty;
+                localStorage.setItem('bawangGorenStoreItems', JSON.stringify(items));
+            }
+            
+            // Save sale
+            const saleRecord = {
+                productName: scannedProduct.name,
+                barcode: scannedProduct.barcode,
+                quantity: qty,
+                price: scannedProduct.price || 0,
+                transactionType: transactionType,
+                date: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+            
+            let sales = JSON.parse(localStorage.getItem('bawangGorenStoreSales') || '[]');
+            sales.unshift(saleRecord);
+            localStorage.setItem('bawangGorenStoreSales', JSON.stringify(sales));
+            
+            console.log('✅ Sale saved:', saleRecord);
+            
+            const total = qty * (scannedProduct.price || 0);
+            alert('✅ Penjualan Berhasil!\n\nProduk: ' + scannedProduct.name + '\nJumlah: ' + qty + '\nTotal: Rp ' + total.toLocaleString('id-ID'));
+            
+            setTimeout(() => resetScan(), 1000);
+        }
+
+        function resetScan() {
+            scannedProduct = null;
+            document.getElementById('productInfo').innerHTML = `
+                <div class="empty-product-info">
+                    <div class="empty-icon">🔍</div>
+                    <p class="empty-text">Klik "Simulate Scan" untuk menampilkan produk</p>
+                </div>
+            `;
+            document.getElementById('saleForm').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Test page loaded');
+            setupSaleFormHandler();
+        });
+    </script>
+</body>
+</html>

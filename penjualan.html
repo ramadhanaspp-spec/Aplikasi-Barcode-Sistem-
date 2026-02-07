@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Penjualan - Bawang Goreng Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/penjualan-style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <div class="logo-icon-small">🧅</div>
+                <h2 class="logo-text">Bawang Goreng Store</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-section-title">CORE</p>
+                
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Stok Barang</span>
+                </a>
+                
+                <a href="scan-barcode.html" class="nav-item">
+                    <span class="nav-icon">📷</span>
+                    <span class="nav-text">Scan Barcode</span>
+                </a>
+                
+                <a href="generator.html" class="nav-item">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-text">Generator Barcode</span>
+                </a>
+                
+                <a href="penjualan.html" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Laporan Penjualan</span>
+                </a>
+            </div>
+
+            <div class="nav-section nav-section-bottom">
+                <a href="#" class="nav-item logout" onclick="handleLogout(event)">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title">Laporan Penjualan</h1>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card card">
+                    <div class="summary-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        📊
+                    </div>
+                    <div class="summary-info">
+                        <p class="summary-label">Total Transaksi</p>
+                        <h3 class="summary-value" id="totalTransactions">0</h3>
+                    </div>
+                </div>
+
+                <div class="summary-card card">
+                    <div class="summary-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        📦
+                    </div>
+                    <div class="summary-info">
+                        <p class="summary-label">Total Item Terjual</p>
+                        <h3 class="summary-value" id="totalItems">0</h3>
+                    </div>
+                </div>
+
+                <div class="summary-card card">
+                    <div class="summary-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        🏆
+                    </div>
+                    <div class="summary-info">
+                        <p class="summary-label">Produk Terlaris</p>
+                        <h3 class="summary-value" id="topProduct">-</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="section-title">Riwayat Penjualan</h2>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="clearAllSales()">
+                            <span class="btn-icon">🗑️</span>
+                            Hapus Semua
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal & Waktu</th>
+                                    <th>Nama Produk</th>
+                                    <th>Barcode</th>
+                                    <th>Jumlah</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <!-- Data akan ditampilkan di sini -->
+                            </tbody>
+                        </table>
+                        
+                        <div class="empty-state" id="emptyState">
+                            <div class="empty-icon">📊</div>
+                            <p>Belum ada transaksi penjualan</p>
+                            <p class="empty-subtitle">Transaksi akan muncul setelah melakukan scan barcode</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="js/penjualan-script.js"></script>
+</body>
+</html>

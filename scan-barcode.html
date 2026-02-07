@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Barcode - Bawang Goreng Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/scan-style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <div class="logo-icon-small">🧅</div>
+                <h2 class="logo-text">Bawang Goreng Store</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-section-title">CORE</p>
+                
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Stok Barang</span>
+                </a>
+                
+                <a href="scan-barcode.html" class="nav-item active">
+                    <span class="nav-icon">📷</span>
+                    <span class="nav-text">Scan Barcode</span>
+                </a>
+                
+                <a href="generator.html" class="nav-item">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-text">Generator Barcode</span>
+                </a>
+                
+                <a href="penjualan.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Laporan Penjualan</span>
+                </a>
+            </div>
+
+            <div class="nav-section nav-section-bottom">
+                <a href="#" class="nav-item logout" onclick="handleLogout(event)">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title">Scanner Barcode</h1>
+            </div>
+
+            <div class="scanner-container">
+                <!-- Scanner Section -->
+                <div class="scanner-section card">
+                    <div class="card-header">
+                        <h2 class="section-title">Scanner Barcode</h2>
+                        <button class="btn-primary" id="startScanBtn" onclick="startScanner()">
+                            <span class="btn-icon">📷</span>
+                            Mulai Scan
+                        </button>
+                    </div>
+                    
+                    <div class="scanner-area">
+                        <div id="scannerPlaceholder" class="scanner-placeholder">
+                            <div class="placeholder-icon">📷</div>
+                            <p class="placeholder-text">Klik tombol "Mulai Scan" untuk memulai</p>
+                            <p class="placeholder-subtext">Pastikan izinkan akses kamera saat diminta</p>
+                        </div>
+                        <video id="scanner" class="scanner-video" autoplay playsinline></video>
+                        <canvas id="scannerCanvas" class="scanner-canvas"></canvas>
+                        <div id="scannerOverlay" class="scanner-overlay">
+                            <div class="scan-frame"></div>
+                        </div>
+                    </div>
+
+                    <div class="scanner-status">
+                        <div class="status-indicator" id="statusIndicator">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Belum aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info Section -->
+                <div class="product-info-section card">
+                    <div class="card-header">
+                        <h2 class="section-title">Informasi Produk</h2>
+                    </div>
+                    
+                    <div class="product-info-content" id="productInfo">
+                        <div class="empty-product-info">
+                            <div class="empty-icon">🔍</div>
+                            <p class="empty-text">Scan barcode untuk melihat informasi produk</p>
+                        </div>
+                    </div>
+
+                    <!-- Form penjualan akan muncul setelah scan -->
+                    <div class="sale-form" id="saleForm" style="display: none;">
+                        <form id="saleFormElement">
+                            <div class="form-group">
+                                <label for="productName">Nama Produk</label>
+                                <input type="text" id="productName" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="productBarcode">Barcode</label>
+                                <input type="text" id="productBarcode" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="productPrice">Harga Satuan</label>
+                                <input type="text" id="productPrice" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="availableStock">Stok Tersedia</label>
+                                <input type="text" id="availableStock" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="saleQty">Jumlah Penjualan</label>
+                                <input type="number" id="saleQty" min="1" required placeholder="Masukkan jumlah">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="transactionType">Tipe Transaksi</label>
+                                <select id="transactionType" required>
+                                    <option value="cash">Cash</option>
+                                    <option value="transfer">Transfer</option>
+                                    <option value="qris">QRIS</option>
+                                </select>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="resetSaleBtn">Reset</button>
+                                <button type="submit" class="btn-primary">
+                                    <span class="btn-icon">✓</span>
+                                    Proses Penjualan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Library untuk Barcode Scanning -->
+    <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+    <script src="script.js"></script>
+    <script src="js/scan-script.js"></script>
+</body>
+</html>

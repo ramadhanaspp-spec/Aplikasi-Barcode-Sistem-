@@ -1,0 +1,158 @@
+/* Laporan Penjualan Specific Styles */
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    animation: scaleIn 0.5s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    animation: bounceIn 0.8s ease;
+}
+
+.summary-info {
+    flex: 1;
+}
+
+.summary-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Sales Table Specific */
+.sales-date {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.date-main {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.date-time {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.quantity-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Animations */
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .summary-card {
+        padding: 20px;
+    }
+    
+    .summary-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .summary-value {
+        font-size: 24px;
+    }
+    
+    .header-actions {
+        width: 100%;
+    }
+    
+    .header-actions button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .summary-label {
+        font-size: 12px;
+    }
+    
+    .summary-value {
+        font-size: 20px;
+    }
+}
