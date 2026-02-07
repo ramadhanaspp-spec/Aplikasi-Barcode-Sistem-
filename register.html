@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Berkah Store</title>
+    <title>Daftar - Bawang Goreng Store</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e8d5c4 0%, #d4b5a0 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,193 +21,129 @@
             padding: 20px;
         }
 
-        .register-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+        .container {
+            background: #f5f5f0;
+            border-radius: 30px;
+            padding: 50px 40px;
             width: 100%;
             max-width: 450px;
-            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .register-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
+        .logo {
             text-align: center;
-            color: white;
+            margin-bottom: 30px;
         }
 
-        .register-header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #fbb03b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
-        .register-header p {
-            font-size: 14px;
-            opacity: 0.9;
+        .logo-icon::before {
+            content: '🧅';
+            font-size: 45px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
-        .register-form {
-            padding: 40px 30px;
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            width: 25px;
+            height: 15px;
+            background: linear-gradient(135deg, #8b6f47 0%, #a0826d 100%);
+            border-radius: 50% 50% 0 0;
+        }
+
+        h1 {
+            color: #ff6b35;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 35px;
         }
 
         .form-group {
             margin-bottom: 20px;
-            position: relative;
         }
 
-        .form-group label {
+        label {
             display: block;
-            margin-bottom: 8px;
             color: #333;
-            font-weight: 500;
-            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
-        .form-group input {
+        input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 15px 18px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus {
             outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
 
-        .form-group input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group input.error {
-            border-color: #ff4444;
-        }
-
-        .error-message {
-            color: #ff4444;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        .password-strength {
-            height: 4px;
-            border-radius: 2px;
-            margin-top: 8px;
-            background: #e0e0e0;
-            overflow: hidden;
-        }
-
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: all 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .password-strength-bar.weak {
-            width: 33%;
-            background: #ff4444;
-        }
-
-        .password-strength-bar.medium {
-            width: 66%;
-            background: #ffaa00;
-        }
-
-        .password-strength-bar.strong {
-            width: 100%;
-            background: #00cc66;
-        }
-
-        .password-strength-text {
-            font-size: 12px;
-            margin-top: 5px;
-            color: #666;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 25px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-            margin-top: 3px;
-            cursor: pointer;
-        }
-
-        .checkbox-group label {
-            font-size: 13px;
-            color: #666;
-            cursor: pointer;
-            margin-bottom: 0;
-        }
-
-        .checkbox-group label a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .checkbox-group label a:hover {
-            text-decoration: underline;
+        input::placeholder {
+            color: #aaa;
         }
 
         .btn-register {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            background: #ff6b35;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            margin-top: 10px;
         }
 
         .btn-register:hover {
+            background: #e55a2b;
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
 
         .btn-register:active {
             transform: translateY(0);
         }
 
-        .btn-register:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .login-link {
             text-align: center;
             margin-top: 25px;
-            font-size: 14px;
             color: #666;
+            font-size: 14px;
         }
 
         .login-link a {
-            color: #667eea;
+            color: #ff6b35;
             text-decoration: none;
             font-weight: 600;
         }
@@ -216,261 +152,109 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 480px) {
-            .register-container {
-                border-radius: 15px;
-            }
-
-            .register-header {
-                padding: 30px 20px;
-            }
-
-            .register-header h1 {
-                font-size: 24px;
-            }
-
-            .register-form {
-                padding: 30px 20px;
-            }
-
-            .form-group {
-                margin-bottom: 18px;
-            }
-        }
-
-        .success-message {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .success-message.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .password-requirements {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <div class="register-header">
-            <h1>Berkah Store</h1>
-            <p>Daftar untuk membuat akun baru</p>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <h1>Bawang Goreng Store</h1>
+            <p class="subtitle">Daftar akun baru</p>
         </div>
-        
-        <div class="register-form">
-            <div class="success-message" id="successMessage">
-                Pendaftaran berhasil! Silakan login untuk melanjutkan.
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input 
+                    type="text" 
+                    id="nama" 
+                    name="nama" 
+                    placeholder="Masukkan nama lengkap"
+                    required
+                >
             </div>
 
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="fullname">Nama Lengkap</label>
-                    <input type="text" id="fullname" placeholder="Masukkan nama lengkap" required>
-                    <span class="error-message" id="fullnameError">Nama lengkap harus diisi</span>
-                </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="nama@email.com"
+                    required
+                >
+            </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="contoh@email.com" required>
-                    <span class="error-message" id="emailError">Email tidak valid</span>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••"
+                    required
+                    minlength="6"
+                >
+                <div class="password-requirements">
+                    Minimal 6 karakter
                 </div>
-                
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Minimal 4 karakter" required>
-                    <span class="error-message" id="usernameError">Username minimal 4 karakter</span>
-                </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="phone">Nomor Telepon</label>
-                    <input type="tel" id="phone" placeholder="08xxxxxxxxxx" required>
-                    <span class="error-message" id="phoneError">Nomor telepon tidak valid</span>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Minimal 8 karakter" required>
-                    <div class="password-strength">
-                        <div class="password-strength-bar" id="strengthBar"></div>
-                    </div>
-                    <p class="password-strength-text" id="strengthText"></p>
-                    <span class="error-message" id="passwordError">Password minimal 8 karakter</span>
-                </div>
+            <div class="form-group">
+                <label for="confirm-password">Konfirmasi Password</label>
+                <input 
+                    type="password" 
+                    id="confirm-password" 
+                    name="confirm-password" 
+                    placeholder="••••••••"
+                    required
+                    minlength="6"
+                >
+            </div>
 
-                <div class="form-group">
-                    <label for="confirmPassword">Konfirmasi Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Ketik ulang password" required>
-                    <span class="error-message" id="confirmPasswordError">Password tidak sama</span>
-                </div>
+            <button type="submit" class="btn-register">Daftar</button>
 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">
-                        Saya setuju dengan <a href="#" onclick="alert('Halaman syarat & ketentuan'); return false;">Syarat & Ketentuan</a> dan <a href="#" onclick="alert('Halaman kebijakan privasi'); return false;">Kebijakan Privasi</a>
-                    </label>
-                </div>
-                
-                <button type="submit" class="btn-register" id="submitBtn">Daftar Sekarang</button>
-            </form>
-            
             <div class="login-link">
-                Sudah punya akun? <a href="login.html">Login di sini</a>
+                Sudah punya akun? <a href="login.html">Masuk</a>
             </div>
-        </div>
+        </form>
     </div>
 
     <script>
-        const form = document.getElementById('registerForm');
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
-        const strengthBar = document.getElementById('strengthBar');
-        const strengthText = document.getElementById('strengthText');
-
-        // Password strength checker
-        password.addEventListener('input', function() {
-            const value = this.value;
-            let strength = 0;
+        function handleRegister(event) {
+            event.preventDefault();
             
-            if (value.length >= 8) strength++;
-            if (value.match(/[a-z]/) && value.match(/[A-Z]/)) strength++;
-            if (value.match(/[0-9]/)) strength++;
-            if (value.match(/[^a-zA-Z0-9]/)) strength++;
+            const nama = document.getElementById('nama').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
 
-            strengthBar.className = 'password-strength-bar';
-            
-            if (value.length === 0) {
-                strengthText.textContent = '';
-                strengthBar.classList.remove('weak', 'medium', 'strong');
-            } else if (strength <= 2) {
-                strengthBar.classList.add('weak');
-                strengthText.textContent = 'Lemah';
-                strengthText.style.color = '#ff4444';
-            } else if (strength === 3) {
-                strengthBar.classList.add('medium');
-                strengthText.textContent = 'Sedang';
-                strengthText.style.color = '#ffaa00';
+            // Validasi password
+            if (password !== confirmPassword) {
+                alert('Password dan konfirmasi password tidak cocok!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Password minimal 6 karakter!');
+                return;
+            }
+
+            // Simulasi registrasi - nanti bisa diganti dengan backend sesungguhnya
+            if (nama && email && password) {
+                alert('Registrasi berhasil!\n\nSilakan login dengan akun yang sudah dibuat.');
+                // Redirect ke halaman login
+                window.location.href = 'login.html';
             } else {
-                strengthBar.classList.add('strong');
-                strengthText.textContent = 'Kuat';
-                strengthText.style.color = '#00cc66';
+                alert('Mohon isi semua field!');
             }
-        });
-
-        // Form validation
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-
-            // Reset all errors
-            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
-
-            // Validate fullname
-            const fullname = document.getElementById('fullname');
-            if (fullname.value.trim().length < 3) {
-                showError('fullname', 'fullnameError');
-                isValid = false;
-            }
-
-            // Validate email
-            const email = document.getElementById('email');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                showError('email', 'emailError');
-                isValid = false;
-            }
-
-            // Validate username
-            const username = document.getElementById('username');
-            if (username.value.length < 4) {
-                showError('username', 'usernameError');
-                isValid = false;
-            }
-
-            // Validate phone
-            const phone = document.getElementById('phone');
-            const phoneRegex = /^08[0-9]{8,11}$/;
-            if (!phoneRegex.test(phone.value)) {
-                showError('phone', 'phoneError');
-                isValid = false;
-            }
-
-            // Validate password
-            if (password.value.length < 8) {
-                showError('password', 'passwordError');
-                isValid = false;
-            }
-
-            // Validate confirm password
-            if (password.value !== confirmPassword.value) {
-                showError('confirmPassword', 'confirmPasswordError');
-                isValid = false;
-            }
-
-            // Validate terms
-            const terms = document.getElementById('terms');
-            if (!terms.checked) {
-                alert('Anda harus menyetujui Syarat & Ketentuan');
-                isValid = false;
-            }
-
-            if (isValid) {
-                // Show success message
-                const successMessage = document.getElementById('successMessage');
-                successMessage.classList.add('show');
-                
-                // Reset form
-                form.reset();
-                strengthBar.className = 'password-strength-bar';
-                strengthText.textContent = '';
-                
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                // Hide success message after 5 seconds
-                setTimeout(() => {
-                    successMessage.classList.remove('show');
-                }, 5000);
-            }
-        });
-
-        function showError(inputId, errorId) {
-            document.getElementById(inputId).classList.add('error');
-            document.getElementById(errorId).classList.add('show');
         }
-
-        // Real-time validation
-        document.getElementById('confirmPassword').addEventListener('input', function() {
-            if (this.value && password.value !== this.value) {
-                this.classList.add('error');
-                document.getElementById('confirmPasswordError').classList.add('show');
-            } else {
-                this.classList.remove('error');
-                document.getElementById('confirmPasswordError').classList.remove('show');
-            }
-        });
-
-        // Animasi input focus
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.01)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
     </script>
 </body>
 </html>
