@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Berkah Store</title>
+    <title>Login - Bawang Goreng Store</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e8d5c4 0%, #d4b5a0 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,20 +21,20 @@
             padding: 20px;
         }
 
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+        .container {
+            background: #f5f5f0;
+            border-radius: 30px;
+            padding: 50px 40px;
             width: 100%;
-            max-width: 400px;
-            animation: slideIn 0.5s ease-out;
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease;
         }
 
-        @keyframes slideIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -42,225 +42,265 @@
             }
         }
 
-        .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
+        .logo {
             text-align: center;
-            color: white;
+            margin-bottom: 30px;
         }
 
-        .login-header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #fbb03b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: bounce 2s infinite;
         }
 
-        .login-header p {
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .logo-icon::before {
+            content: '🧅';
+            font-size: 45px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            width: 25px;
+            height: 15px;
+            background: linear-gradient(135deg, #8b6f47 0%, #a0826d 100%);
+            border-radius: 50% 50% 0 0;
+        }
+
+        h1 {
+            color: #ff6b35;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 35px;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-size: 14px;
-            opacity: 0.9;
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.5s ease;
         }
 
-        .login-form {
-            padding: 40px 30px;
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .demo-info {
+            background: #e6fffa;
+            border: 2px solid #81e6d9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #234e52;
+            animation: fadeIn 1s ease;
+        }
+
+        .demo-info strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a202c;
+            font-size: 15px;
+        }
+
+        .demo-info p {
+            margin: 4px 0;
         }
 
         .form-group {
             margin-bottom: 25px;
-            position: relative;
         }
 
-        .form-group label {
+        label {
             display: block;
-            margin-bottom: 8px;
             color: #333;
-            font-weight: 500;
-            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
-        .form-group input {
+        input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 15px 18px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus {
             outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
 
-        .form-group input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-bottom: 25px;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 13px;
-            transition: color 0.3s ease;
-        }
-
-        .forgot-password a:hover {
-            color: #764ba2;
+        input::placeholder {
+            color: #aaa;
         }
 
         .btn-login {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            background: #ff6b35;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
 
         .btn-login:hover {
+            background: #e55a2b;
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
 
         .btn-login:active {
             transform: translateY(0);
         }
 
-        .divider {
-            text-align: center;
-            margin: 25px 0;
-            position: relative;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: #e0e0e0;
-        }
-
-        .divider span {
-            background: white;
-            padding: 0 15px;
-            position: relative;
-            color: #999;
-            font-size: 13px;
-        }
-
-        .btn-register {
-            width: 100%;
-            padding: 14px;
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-register:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
         @media (max-width: 480px) {
-            .login-container {
-                border-radius: 15px;
+            .container {
+                padding: 40px 30px;
             }
 
-            .login-header {
-                padding: 30px 20px;
+            h1 {
+                font-size: 26px;
             }
 
-            .login-header h1 {
-                font-size: 24px;
+            .logo-icon {
+                width: 70px;
+                height: 70px;
             }
 
-            .login-form {
-                padding: 30px 20px;
+            .logo-icon::before {
+                font-size: 38px;
             }
-
-            .form-group {
-                margin-bottom: 20px;
-            }
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 15px;
-            top: 38px;
-            color: #999;
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Berkah Store</h1>
-            <p>Silakan login untuk melanjutkan</p>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <h1>Bawang Goreng Store</h1>
+            <p class="subtitle">Selamat datang kembali!</p>
         </div>
-        
-        <div class="login-form">
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Masukkan username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Masukkan password" required>
-                </div>
-                
-                <div class="forgot-password">
-                    <a href="forgot-password.html">Lupa kata sandi?</a>
-                </div>
-                
-                <button type="submit" class="btn-login">Login</button>
-            </form>
-            
-            <div class="divider">
-                <span>atau</span>
+
+        <div class="demo-info">
+            <strong>🔑 Demo Login:</strong>
+            <p>Username: <code><strong>admin</strong></code></p>
+            <p>Password: <code><strong>admin123</strong></code></p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Username atau password salah!
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Masukkan username"
+                    required
+                    autocomplete="username"
+                >
             </div>
-            
-            <button type="button" class="btn-register" onclick="window.location.href='register.html'">Daftar Akun Baru</button>
-        </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="btn-login">Masuk</button>
+        </form>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Check if already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
-            if(username && password) {
-                alert('Login berhasil! Selamat datang di Berkah Store');
-                // Redirect ke halaman utama setelah login
-                // window.location.href = 'dashboard.html';
-            }
-        });
+            const errorMessage = document.getElementById('errorMessage');
 
-        // Animasi input focus
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
+            // Simple authentication (demo purposes)
+            if (username === 'admin' && password === 'admin123') {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                window.location.href = 'index.html';
+            } else {
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        }
     </script>
 </body>
 </html>
