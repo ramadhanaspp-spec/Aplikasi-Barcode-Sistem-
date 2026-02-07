@@ -8,36 +8,7 @@ let scannedProduct = null;
 document.addEventListener('DOMContentLoaded', function() {
     setupScanner();
     setupEventListeners();
-    setupSaleFormHandler(); // Add this
 });
-
-// Setup Sale Form Handler
-function setupSaleFormHandler() {
-    const form = document.getElementById('saleFormElement');
-    const resetBtn = document.getElementById('resetSaleBtn');
-    
-    if (form) {
-        // Remove any existing listeners
-        const newForm = form.cloneNode(true);
-        form.parentNode.replaceChild(newForm, form);
-        
-        // Add submit event listener
-        newForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submitted!');
-            handleSale(e);
-        });
-        
-        console.log('Sale form handler attached successfully');
-    }
-    
-    if (resetBtn) {
-        resetBtn.addEventListener('click', function() {
-            console.log('Reset button clicked');
-            resetScan();
-        });
-    }
-}
 
 // Setup Scanner Elements
 function setupScanner() {
@@ -260,11 +231,6 @@ function displayProductInfo(product) {
         document.getElementById('transactionType').value = 'cash'; // Default to cash
         
         saleForm.style.display = 'block';
-        
-        // Re-attach event handlers after form is shown
-        setTimeout(() => {
-            setupSaleFormHandler();
-        }, 100);
     } else {
         saleForm.style.display = 'none';
         showNotification('Stok produk habis, tidak dapat melakukan penjualan', 'error');
@@ -275,11 +241,7 @@ function displayProductInfo(product) {
 function handleSale(event) {
     event.preventDefault();
     
-    console.log('=== HANDLE SALE TRIGGERED ===');
-    console.log('Scanned Product:', scannedProduct);
-    
     if (!scannedProduct) {
-        console.error('No scanned product!');
         showNotification('Tidak ada produk yang dipilih', 'error');
         return;
     }
@@ -287,26 +249,15 @@ function handleSale(event) {
     const qty = parseInt(document.getElementById('saleQty').value);
     const transactionType = document.getElementById('transactionType').value;
     
-    console.log('Sale Details:', {
-        qty: qty,
-        transactionType: transactionType,
-        availableStock: scannedProduct.stock,
-        price: scannedProduct.price
-    });
-    
-    if (!qty || qty <= 0) {
-        console.error('Invalid quantity:', qty);
+    if (qty <= 0) {
         showNotification('Jumlah penjualan harus lebih dari 0', 'error');
         return;
     }
     
     if (qty > scannedProduct.stock) {
-        console.error('Quantity exceeds stock:', qty, '>', scannedProduct.stock);
         showNotification('Jumlah penjualan melebihi stok tersedia', 'error');
         return;
     }
-    
-    console.log('Validation passed, processing sale...');
     
     // Update stock in inventory
     const items = JSON.parse(localStorage.getItem('bawangGorenStoreItems') || '[]');
@@ -329,22 +280,17 @@ function handleSale(event) {
         timestamp: Date.now()
     };
     
-    console.log('Sale Record:', saleRecord);
-    
     // Save to sales report
     saveSaleRecord(saleRecord);
     
     // Calculate total
     const total = qty * (scannedProduct.price || 0);
     
-    console.log('Sale processed successfully!');
-    
     // Show success message with details
     showSaleSuccessWithDetails(scannedProduct.name, qty, scannedProduct.price, total, transactionType);
     
     // Reset after 2.5 seconds
     setTimeout(() => {
-        console.log('Resetting scan...');
         resetScan();
     }, 2500);
 }
